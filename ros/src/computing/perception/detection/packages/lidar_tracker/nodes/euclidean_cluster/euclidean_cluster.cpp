@@ -100,6 +100,10 @@ static bool _use_diffnormals;
 static double _clip_min_height;
 static double _clip_max_height;
 
+//added start by siyuan.yu
+static double _remove_ground_max_height;
+static double _remove_ground_max_angle;
+//added end by siyuan.yu
 static bool _keep_lanes;
 static double _keep_lane_left_distance;
 static double _keep_lane_right_distance;
@@ -576,7 +580,10 @@ void velodyne_callback(const sensor_msgs::PointCloud2ConstPtr& in_sensor_cloud)
 
 		if(_remove_ground)
 		{
-			removeFloor(inlanes_cloud_ptr, nofloor_cloud_ptr, onlyfloor_cloud_ptr);
+			//removeFloor(inlanes_cloud_ptr, nofloor_cloud_ptr, onlyfloor_cloud_ptr);
+			//edit start by siyuan.yu
+			removeFloor(inlanes_cloud_ptr, nofloor_cloud_ptr, onlyfloor_cloud_ptr,_remove_ground_max_height,_remove_ground_max_angle);
+			//edit end by siyuan.yu
 			publishCloud(&_pub_ground_cloud, onlyfloor_cloud_ptr);
 		}
 		else
@@ -718,6 +725,10 @@ int main (int argc, char** argv)
 	private_nh.param("pose_estimation", _pose_estimation, false);	ROS_INFO("pose_estimation: %d", _pose_estimation);
 	private_nh.param("clip_min_height", _clip_min_height, -1.3);	ROS_INFO("clip_min_height: %f", _clip_min_height);
 	private_nh.param("clip_max_height", _clip_max_height, 0.5);		ROS_INFO("clip_max_height: %f", _clip_max_height);
+	//added start by siyuan.yu
+	private_nh.param("remove_ground_max_height", _remove_ground_max_height, 0.2);		ROS_INFO("remove_ground_max_height: %f", _remove_ground_max_height);
+	private_nh.param("remove_ground_max_angle", _remove_ground_max_angle, 0.35);		ROS_INFO("remove_ground_max_angle: %f", _remove_ground_max_angle);
+	//added end by siyuan.yu
 	private_nh.param("keep_lanes", _keep_lanes, false);				ROS_INFO("keep_lanes: %d", _keep_lanes);
 	private_nh.param("keep_lane_left_distance", _keep_lane_left_distance, 5.0);		ROS_INFO("keep_lane_left_distance: %f", _keep_lane_left_distance);
 	private_nh.param("keep_lane_right_distance", _keep_lane_right_distance, 5.0);	ROS_INFO("keep_lane_right_distance: %f", _keep_lane_right_distance);
